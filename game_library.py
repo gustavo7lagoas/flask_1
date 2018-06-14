@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, \
+    url_for
 
 app = Flask(__name__)
 app.secret_key = 'testing_flask'
@@ -23,6 +24,8 @@ def index():
 
 @app.route('/new')
 def new():
+    if 'authenticated_user' not in session or session['authenticated_user'] == None:
+        return redirect(url_for('login', next=url_for('new')))
     return render_template('new.html', title='New Game')
 
 
@@ -31,12 +34,13 @@ def create():
     game = Game(request.form['name'], request.form['category'],
         request.form['game_console'])
     game_list.append(game)
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 @app.route('/login')
 def login():
-    return render_template('login.html', title='login')
+    next = request.args.get('next')
+    return render_template('login.html', title='login', next=next)
 
 
 @app.route('/authenticate', methods=['POST',])
@@ -44,16 +48,17 @@ def auth():
     if 'mestra' == request.form['passwd']:
         session['authenticated_user'] = request.form['username']
         flash('You were successfully logged in')
-        return redirect('/new')
+        next = request.form['next']
+        return redirect(next)
     else:
         flash('Invalid Credentials')
-        return redirect('/login')
+        return redirect(url_for('login'))
 
 
 @app.route('/logout')
 def logout():
     session['authenticated_user'] = None
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 app.run(debug=True)
