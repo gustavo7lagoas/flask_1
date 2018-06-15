@@ -1,0 +1,15 @@
+{
+  "name": "cypress_mygame",
+  "version": "1.0.0",
+  "description": "testing using cypress",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "cypress": "^3.0.1"
+  },
+  "scripts": {
+    "test": "cypress open"
+  },
+  "author": "",
+  "license": "ISC"
+}

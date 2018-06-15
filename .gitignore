@@ -1,2 +1,5 @@
 .flask_1
 __pycache__
+tests/node_modules
+*-lock.json
+
