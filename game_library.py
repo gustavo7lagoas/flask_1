@@ -4,6 +4,20 @@ from flask import Flask, render_template, request, redirect, session, flash, \
 app = Flask(__name__)
 app.secret_key = 'testing_flask'
 
+
+class User:
+    def __init__(self, id, name, passwd):
+        self.id = id
+        self.name = name
+        self.passwd = passwd
+
+
+user1 = User('gustavo', 'Gustavo Moreira', 'passwd')
+user2 = User('fran', 'Francislene Patrícia', '1234')
+user3 = User('nicolas', 'Nicolas', 'lol')
+users = {user1.id: user1, user2.id: user2, user3.id: user3}
+
+
 class Game:
     def __init__(self, name, category, game_console):
         self.name = name
@@ -45,14 +59,15 @@ def login():
 
 @app.route('/authenticate', methods=['POST',])
 def auth():
-    if 'mestra' == request.form['passwd']:
-        session['authenticated_user'] = request.form['username']
-        flash('You were successfully logged in')
-        next = request.form['next']
-        return redirect(next)
-    else:
-        flash('Invalid Credentials')
-        return redirect(url_for('login'))
+    if request.form['username'] in users:
+        user = users[request.form['username']]
+        if user.passwd == request.form['passwd']:
+            session['authenticated_user'] = request.form['username']
+            flash('{}, you were successfully logged in'.format(user.name))
+            next = request.form['next']
+            return redirect(next)
+    flash('Invalid Credentials')
+    return redirect(url_for('login'))
 
 
 @app.route('/logout')

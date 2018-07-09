@@ -13,7 +13,7 @@ context('Login page', () => {
         cy.get('#username').type('ze das couves')
             .get('#passwd').type('mestra')
             .get('[data-cy="login"]').click()
-        cy.get('[data-cy="corpo-tabela"]')
+        cy.get('[data-cy="game-library"]')
             .should('exist')
     })
 })
