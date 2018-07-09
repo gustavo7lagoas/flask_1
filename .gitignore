@@ -2,4 +2,4 @@
 __pycache__
 tests/node_modules
 *-lock.json
-
+.vscode
