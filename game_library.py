@@ -1,35 +1,33 @@
+from dao import GameDao
+from models import Game, User
 from flask import Flask, render_template, request, redirect, session, flash, \
     url_for
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.secret_key = 'testing_flask'
 
+app.config['MYSQL_HOST'] = "172.17.0.2"
+app.config['MYSQL_USER'] = "root"
+app.config['MYSQL_PASSWORD'] = "admin"
+app.config['MYSQL_DB'] = "gamelibrary"
+app.config['MYSQL_PORT'] = 3306
 
-class User:
-    def __init__(self, id, name, passwd):
-        self.id = id
-        self.name = name
-        self.passwd = passwd
 
+db = MySQL(app)
+
+gameDao = GameDao(db)
 
 user1 = User('gustavo', 'Gustavo Moreira', 'passwd')
 user2 = User('fran', 'Francislene Patrícia', '1234')
 user3 = User('nicolas', 'Nicolas', 'lol')
 users = {user1.id: user1, user2.id: user2, user3.id: user3}
 
-
-class Game:
-    def __init__(self, name, category, game_console):
-        self.name = name
-        self.category = category
-        self.game_console = game_console
-
 game1 = Game('Super Mario RPG', 'RPG', 'SNES')
 game2 = Game('Tetris', 'Puzzle', 'Several')
 game3 = Game('Fifa 2018', 'Sports', 'Several')
 game4 = Game('Street Fighter 2', 'Fight', 'Several')
 game_list = [game1, game2, game3, game4]
-
 
 @app.route('/')
 def index():
@@ -47,7 +45,7 @@ def new():
 def create():
     game = Game(request.form['name'], request.form['category'],
         request.form['game_console'])
-    game_list.append(game)
+    gameDao.save(game)
     return redirect(url_for('index'))
 
 
